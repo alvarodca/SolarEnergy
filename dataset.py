@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
     # Each defect combination is simulated with 9 different temperatures
     curve_id = 0 # Initializing curve identifier
-    samples = 100 # Curves per group 
+    samples = 1000 # Curves per group 
     dataset = []
     defect_type = ["one","two", "two_levels"]
 

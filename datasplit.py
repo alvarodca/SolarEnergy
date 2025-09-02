@@ -18,9 +18,7 @@ validation_folder_1 = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\valida
 validation_folder_2 = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\validation\2"
 
 # Testing
-testing_folder_0 = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\testing\0"
-testing_folder_1 = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\testing\1"
-testing_folder_2 = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\testing\2"
+testing_folder = r"C:\Users\1\Documents\SolarEnergy\SolarEnergy\data\testing"
 
 
 
@@ -31,9 +29,8 @@ os.makedirs(training_folder_2, exist_ok=True)
 os.makedirs(validation_folder_0, exist_ok=True)
 os.makedirs(validation_folder_1, exist_ok=True)
 os.makedirs(validation_folder_2, exist_ok=True)
-os.makedirs(testing_folder_0,exist_ok=True)
-os.makedirs(testing_folder_1,exist_ok=True)
-os.makedirs(testing_folder_2,exist_ok=True)
+os.makedirs(testing_folder,exist_ok=True)
+
 
 
 # Obtaining images
@@ -72,11 +69,4 @@ for file in validation:
         shutil.copy(file, validation_folder_2)
 
 for file in testing:
-    if "Label_0" in file:
-        shutil.copy(file, testing_folder_0)
-
-    elif "Label_1" in file:
-        shutil.copy(file,testing_folder_1)
-
-    else:
-        shutil.copy(file, testing_folder_2)
+    shutil.copy(file, testing_folder)
