@@ -201,7 +201,7 @@ def save_curve_image(df, curve_id, label, out_dir = "curve_images"):
         
     ax.set_xlabel('Excess carrier concentration')
     ax.set_ylabel('Lifetime (SRH)')
-    ax.set_title(f'SRH Lifetime Curve Label: {label} Curve_Id: {curve_id}Temperature{subset["T"].iloc[0]}', size = 14)
+    ax.set_title('SRH Lifetime Curve', size = 14)
     
     filename =  os.path.join(out_dir,f"image_{curve_id}Label_{label}.png")
     plt.savefig(filename, dpi = 150, bbox_inches = "tight")
@@ -213,11 +213,12 @@ def save_curve_image(df, curve_id, label, out_dir = "curve_images"):
 if __name__ == "__main__":
     
     # Initializing temperatures
-    temperatures = [200,225,250,275,300,325,350,375,400]
+    #temperatures = [200,225,250,275,300,325,350,375,400]
+    temperatures = [300] # Just to start
 
     # Each defect combination is simulated with 9 different temperatures
     curve_id = 0 # Initializing curve identifier
-    samples = 10 # Curves per group 
+    samples = 100 # Curves per group 
     dataset = []
     defect_type = ["one","two", "two_levels"]
 
@@ -239,31 +240,6 @@ if __name__ == "__main__":
                 label = subset["Label"].iloc[0]
                 save_curve_image(subset,ids,label, out_dir="curve_images")   
 
-    # Samples per class
-    # samples = 1
-    # for _ in range(samples):
-    #     df, curve_id = store_curves(temperatures,n_points=100,defect_type="one",start_curve_id= curve_id)
-    #     curves.append(df)
-
-    #     df, curve_id = store_curves(temperatures,n_points=100,defect_type="two",start_curve_id= curve_id)
-    #     curves.append(df)
-
-    #     df, curve_id = store_curves(temperatures,n_points=100,defect_type="two_levels",start_curve_id= curve_id)
-    #     curves.append(df)
-
-    # df = pd.concat(curves, ignore_index= False)
-    # df.to_csv("srh_curve.csv", index=False)
-    # df.to_csv("srh_curves.csv", index=False, mode = "a")
-
-    # Plotting the curve
-    #show_curve()
-
-    # cuando veo una curva quiero saber si una impureza con dos niveles o dos impurezas <- supervised
-    # si es concava una impureza, convexa unknown <- clustering
     
 
-# Preguntas
-
-# En la grafica, eso es la misma curva o no?
-
-# Supervisado o no supervisado
+    
