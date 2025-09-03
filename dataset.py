@@ -95,7 +95,7 @@ def compute_srh(temperature, delta_n, e_t, sigma_n, sigma_p, N_T=1e12, N_DOP = 5
     return srh, tau_n0, tau_p0, n_1, p_1,n_0,p_0,n_i,nc,nv, v_n, v_p
 
 
-def store_curves(temperatures, n_points, defect_type,start_curve_id):
+def store_curves(temperatures, n_points, defect_type,start_curve_id:int):
     """Functions which creates curves
     temperatures <- list of temperatures
     n_points <- Points to represent each curve
@@ -216,9 +216,26 @@ if __name__ == "__main__":
     #temperatures = [200,225,250,275,300,325,350,375,400]
     temperatures = [300] # Just to start
 
-    # Each defect combination is simulated with 9 different temperatures
-    curve_id = 0 # Initializing curve identifier
-    samples = 1000 # Curves per group 
+    # Verifying the desired path exists
+    path = "./metadata.csv"
+    exists = os.path.isfile(path)
+
+    # If it exists, verify the amount of rows to update curve_id
+    if exists:
+        data = pd.read_csv("metadata.csv", header = 0)
+        # No data
+        if data.empty:
+            curve_id = 0
+        
+        # There is data, update curve_id
+        else: 
+            curve_id = data["curve_id"].max() + 1
+
+    else:
+        curve_id = 0
+
+
+    samples = 30000 # Curves per group 
     dataset = []
     defect_type = ["one","two", "two_levels"]
 
@@ -232,13 +249,19 @@ if __name__ == "__main__":
 
     # Saving the data
     curves = pd.concat(dataset,ignore_index=True)
-    curves.to_csv("metadata.csv", index = False)
-    
+
+    # If dataset exists
+    if os.path.exists("metadata.csv"):
+        curves.to_csv("metadata.csv", index = False, mode = "a", header = False) # Append without the header
+    else:
+        curves.to_csv("metadata.csv", index = False) # Add with the header
+
+
     # Storing data as images
-    for ids in curves["curve_id"].unique():
-                subset = curves[curves["curve_id"]==ids]
-                label = subset["Label"].iloc[0]
-                save_curve_image(subset,ids,label, out_dir="curve_images")   
+    # for ids in curves["curve_id"].unique():
+    #             subset = curves[curves["curve_id"]==ids]
+    #             label = subset["Label"].iloc[0]
+    #             save_curve_image(subset,ids,label, out_dir="curve_images")   
 
     
 

@@ -1,3 +1,8 @@
+# Files
 *.csv
+# Images
 *.png
-.csv
+
+# Models
+*.keras
+*.h5

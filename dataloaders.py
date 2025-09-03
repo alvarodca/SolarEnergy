@@ -18,3 +18,10 @@ val_gen = val_data.flow_from_directory('data\validation',
 test_gen = test_data.flow_from_directory('data\testing', 
                                          target_size=(128,128), batch_size = 32,
                                            class_mode = "categorical")
+
+# Training
+model.fit(train_gen, epochs = 10, validation_data = val_data, verbose = 1)
+
+# Evaluating
+loss, accuracy = model.evaluate(test_gen)
+print("Loss and accuracy:" loss, accuracy)
