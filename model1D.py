@@ -89,17 +89,19 @@ print("Loss:", loss,"Accuracy:", accuracy)
 # Saving the model
 model.save("conv1d.keras")
 
-# Loading the model
-model = load_model("conv1d.keras")
+if __name__ == "__main__":
+
+    # Loading the model
+    model = load_model("conv1d.keras")
 
 
 
 
-# individual curves prediction
-# y_pred = model.predict(X_test)
-# y_pred_classes = np.argmax(y_pred, axis=1)  # conv<ert softmax output to class index
+    # individual curves prediction
+    y_pred = model.predict(X_test)
+    y_pred_classes = np.argmax(y_pred, axis=1)  # conv<ert softmax output to class index
 
-# from sklearn.metrics import confusion_matrix, classification_report
+    from sklearn.metrics import confusion_matrix, classification_report
 
-# print("Confusion Matrix: \n",confusion_matrix(y_test, y_pred_classes))
-# print("Classification Report: \n",classification_report(y_test, y_pred_classes))
+    print("Confusion Matrix: \n",confusion_matrix(y_test, y_pred_classes))
+    print("Classification Report: \n",classification_report(y_test, y_pred_classes))
