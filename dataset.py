@@ -141,8 +141,8 @@ def compute_srh_multilevel(temperature, delta_n, e_t, sigma_n, sigma_p, e_t_2,si
     p_1 = n_i * np.exp(-e_t/(K_B_EV*temperature))
 
     # n2 and p2
-    n_2 = n_i * np.exp((e_t_2-e_i)/(K_B_EV*temperature))
-    p_2 = n_i * np.exp((e_i-e_t_2)/(K_B_EV*temperature))
+    n_2 = n_i * np.exp((e_t_2)/(K_B_EV*temperature))
+    p_2 = n_i * np.exp((-e_t_2)/(K_B_EV*temperature))
 
     
     # Applying the formula
