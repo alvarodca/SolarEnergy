@@ -5,7 +5,10 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, BatchNormalization
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
 import os
+import matplotlib.pyplot as plt
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -64,37 +67,39 @@ model.add(MaxPooling1D(2))
 model.add(Conv1D(64, kernel_size = 5, activation = "relu"))
 model.add(BatchNormalization())
 model.add(MaxPooling1D(2))
-model.add(Conv1D(128, kernel_size = 5, activation = "relu"))
-model.add(BatchNormalization())
-model.add(MaxPooling1D(2))
 model.add(Flatten())
-model.add(Dense(128,activation = "relu"))
+model.add(Dense(64,activation = "relu"))
 model.add(Dropout(0.4))
-model.add(Dense(64, activation = "relu"))
+model.add(Dense(32, activation = "relu"))
 model.add(Dropout(0.3))
 model.add(Dense(n_outputs,activation = "softmax"))
 
-model.compile(loss = "sparse_categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"]) 
+model.compile(loss = "sparse_categorical_crossentropy", optimizer = Adam(learning_rate = 1e-4), metrics = ["accuracy"]) 
 # Sparse categorical cross entropy as we have integer labels, if not we have to one hot encode our labels 
 
-batch_size, epochs = 32, 10 # Bath size is the number of processed curves
-
-# Training
-model.fit(X_train, y_train, epochs = 10, batch_size = 32, verbose = 1)
-# Verbose its for printing output throught the process, might slow down the process but useful, if set to 0, does not print
-
-# Evaluation
-loss ,accuracy = model.evaluate(X_test, y_test, batch_size = batch_size, verbose = 1)
-print("Loss:", loss,"Accuracy:", accuracy)
-# Saving the model
-model.save("conv1d.keras")
 
 if __name__ == "__main__":
 
+    
+    batch_size, epochs = 32, 50 # Bath size is the number of processed curves
+
+    # Early Stopping, training stops automatically if the validation loss ( in this case) stops improving after a certain time
+    early_stopping = EarlyStopping(monitor = "val_loss",
+                                    patience = 3, # Number of epochs
+                                    restore_best_weights = True) # Goes back to best model
+
+    # Training
+    history = model.fit(X_train, y_train, epochs = epochs, validation_split = 0.1, batch_size = batch_size, verbose = 1,callbacks = [early_stopping])
+    # Verbose its for printing output throught the process, might slow down the process but useful, if set to 0, does not print
+
+    # Evaluation
+    loss ,accuracy = model.evaluate(X_test, y_test, batch_size = batch_size, verbose = 1)
+    print("Loss:", loss,"Accuracy:", accuracy)
+    # Saving the model
+    model.save("conv1d.keras")
+
     # Loading the model
     model = load_model("conv1d.keras")
-
-
 
 
     # individual curves prediction
@@ -105,3 +110,28 @@ if __name__ == "__main__":
 
     print("Confusion Matrix: \n",confusion_matrix(y_test, y_pred_classes))
     print("Classification Report: \n",classification_report(y_test, y_pred_classes))
+
+    # Useful plots
+    plt.figure(figsize=(8,5))
+    plt.plot(history.history['accuracy'], label='Train Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title('Epoch vs Accuracy')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Plot Loss vs Epochs (optional)
+    plt.figure(figsize=(8,5))
+    plt.plot(history.history['loss'], label='Train Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Epoch vs Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    pd.DataFrame(history.history).plot(figsize=(8,5))
+    plt.show()

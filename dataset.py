@@ -131,10 +131,7 @@ def compute_srh_multilevel(temperature, delta_n, e_t, sigma_n, sigma_p, e_t_2,si
     n = n_0 + delta_n
     p = p_0 + delta_n
 
-    # Intrinsic Fermi Level
-    # Taking E_v = 0and conduction band edge E_c = E_g
-    # E_i - E_v = E_g/2 + kT*ln(N_v/N_c)
-    e_i = (E_G_SI)/2 + (K_B_EV*temperature/2)*np.log(nc/nv)
+
 
     # n1 and p1
     n_1 = n_i * np.exp(e_t/(K_B_EV*temperature))
@@ -275,7 +272,7 @@ if __name__ == "__main__":
         curve_id = 0
 
 
-    samples = 30000 # Curves per group 
+    samples = 10000 # Curves per group 
     dataset = []
     defect_type = ["one","two", "two_levels"]
 
