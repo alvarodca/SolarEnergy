@@ -75,8 +75,8 @@ def compute_srh(temperature, delta_n, e_t, sigma_n, sigma_p, N_T=1e12, N_DOP = 5
     srh = numerator/denominator
 
     # Adding optional Gaussian noise
-    # if NOISE > 0:
-    #       srh *= 1 + np.random.normal(0,NOISE)
+    if NOISE > 0:
+          srh *= 1 + np.random.normal(0,NOISE)
 
     # Returning all values as we wish to store them for future use
     #return srh, tau_n0, tau_p0, n_1, p_1,n_0,p_0,n_i,nc,nv, v_n, v_p
@@ -99,7 +99,7 @@ def compute_srh_two_defects(temperature, delta_n, e_t, sigma_n, sigma_p, e_t_2,s
 
     # Operation
     computation = 1/first_tau + 1/second_tau
-
+    
     # Resulting SRH
     return 1/computation
 
@@ -154,7 +154,13 @@ def compute_srh_multilevel(temperature, delta_n, e_t, sigma_n, sigma_p, e_t_2,si
     # Final computation
     denominator = denominator_part1*(denominator_part2+denominator_part3)
 
-    return numerator/denominator
+    srh = numerator/denominator
+
+    # Adding optional Gaussian noise
+    if NOISE > 0:
+          srh *= 1 + np.random.normal(0,NOISE)
+          
+    return srh
 
 
 def store_curves(temperatures, n_points, defect_type,start_curve_id:int):
@@ -251,7 +257,7 @@ if __name__ == "__main__":
     
     # Initializing temperatures
     #temperatures = [200,225,250,275,300,325,350,375,400]
-    temperatures = [300] # Just to start
+    temperatures = [225,250,275,300,325,350,375] # Just to start
 
     # Verifying the desired path exists
     path = "./metadata.csv"

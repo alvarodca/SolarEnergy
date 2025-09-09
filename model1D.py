@@ -7,6 +7,7 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import GlobalAveragePooling1D
 import os
 import matplotlib.pyplot as plt
 
@@ -44,6 +45,8 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.1, random_st
 
 # Pooling <- reduces the size
 # MaxPooling1D <- Takes maximum values at each conv, params: pool_size <- window length
+# GlobalAveragePooling1D <- 
+
 
 # BatchNormalization <-  Normalizes Activations
 
@@ -61,13 +64,17 @@ n_timesteps, n_features, n_outputs = X_train.shape[1],1,3
 
 # Initializing our model
 model = Sequential()
-model.add(Conv1D(32,kernel_size = 5, activation = "relu", input_shape = (n_timesteps, n_features)))
+model.add(Conv1D(32,kernel_size = 3, activation = "relu", input_shape = (n_timesteps, n_features)))
 model.add(BatchNormalization())
 model.add(MaxPooling1D(2))
 model.add(Conv1D(64, kernel_size = 5, activation = "relu"))
 model.add(BatchNormalization())
 model.add(MaxPooling1D(2))
-model.add(Flatten())
+model.add(Conv1D(64, kernel_size = 7, activation = "relu"))
+model.add(BatchNormalization())
+model.add(MaxPooling1D(2))
+#model.add(Flatten())
+model.add(GlobalAveragePooling1D())
 model.add(Dense(64,activation = "relu"))
 model.add(Dropout(0.4))
 model.add(Dense(32, activation = "relu"))
@@ -81,11 +88,11 @@ model.compile(loss = "sparse_categorical_crossentropy", optimizer = Adam(learnin
 if __name__ == "__main__":
 
     
-    batch_size, epochs = 32, 50 # Bath size is the number of processed curves
+    batch_size, epochs = 64, 50 # Bath size is the number of processed curves
 
     # Early Stopping, training stops automatically if the validation loss ( in this case) stops improving after a certain time
     early_stopping = EarlyStopping(monitor = "val_loss",
-                                    patience = 3, # Number of epochs
+                                    patience = 5, # Number of epochs
                                     restore_best_weights = True) # Goes back to best model
 
     # Training
@@ -135,3 +142,6 @@ if __name__ == "__main__":
 
     pd.DataFrame(history.history).plot(figsize=(8,5))
     plt.show()
+
+    # Storing results
+    pd.DataFrame(history.history).to_csv("training_history.csv", index = False)
