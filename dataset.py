@@ -257,7 +257,7 @@ if __name__ == "__main__":
     
     # Initializing temperatures
     #temperatures = [200,225,250,275,300,325,350,375,400]
-    temperatures = [225,250,275,300,325,350,375] # Just to start
+    temperatures = [250,275,300,325] # Just to start
 
     # Verifying the desired path exists
     path = "./metadata.csv"
@@ -278,17 +278,17 @@ if __name__ == "__main__":
         curve_id = 0
 
 
-    samples = 10000 # Curves per group 
+    samples = 30000 # Curves per group 
     dataset = []
     defect_type = ["one","two", "two_levels"]
 
     # Computing the curves
     for defect_types in defect_type:
         for i in range(samples):
-            df = store_curves(temperatures, n_points = 100, defect_type=defect_types, start_curve_id=curve_id)
-            dataset.append(df)
-            print("Row:",i)
-            curve_id = df["curve_id"].max() + 1
+                df = store_curves(temperatures, n_points = 100, defect_type=defect_types, start_curve_id=curve_id)
+                dataset.append(df)
+                print("Row:",i)
+                curve_id = df["curve_id"].max() + 1
 
     # Saving the data
     curves = pd.concat(dataset,ignore_index=True) # Ignore index avoids potential duplicate indices
@@ -302,9 +302,9 @@ if __name__ == "__main__":
 
     # Storing data as images
     # for ids in curves["curve_id"].unique():
-    #             subset = curves[curves["curve_id"]==ids]
-    #             label = subset["Label"].iloc[0]
-    #             save_curve_image(subset,ids,label, out_dir="curve_images")   
+    #              subset = curves[curves["curve_id"]==ids]
+    #              label = subset["Label"].iloc[0]
+    #              save_curve_image(subset,ids,label, out_dir="curve_images")   
 
     
 

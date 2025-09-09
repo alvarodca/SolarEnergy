@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from numpy import mean, std
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, load_model
@@ -32,6 +31,10 @@ y = labels
 
 # Data Splitting
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.1, random_state=42)
+
+# Normalizing for NN
+X_train = (X_train - X_train.mean()) / X_train.std()
+X_test = (X_test - X_train.mean()) / X_train.std()
 
 # Some useful information for our Conv1D model
 
@@ -70,9 +73,6 @@ model.add(MaxPooling1D(2))
 model.add(Conv1D(64, kernel_size = 5, activation = "relu"))
 model.add(BatchNormalization())
 model.add(MaxPooling1D(2))
-model.add(Conv1D(64, kernel_size = 7, activation = "relu"))
-model.add(BatchNormalization())
-model.add(MaxPooling1D(2))
 #model.add(Flatten())
 model.add(GlobalAveragePooling1D())
 model.add(Dense(64,activation = "relu"))
@@ -81,7 +81,7 @@ model.add(Dense(32, activation = "relu"))
 model.add(Dropout(0.3))
 model.add(Dense(n_outputs,activation = "softmax"))
 
-model.compile(loss = "sparse_categorical_crossentropy", optimizer = Adam(learning_rate = 1e-4), metrics = ["accuracy"]) 
+model.compile(loss = "sparse_categorical_crossentropy", optimizer = Adam(learning_rate = 1e-3), metrics = ["accuracy"]) 
 # Sparse categorical cross entropy as we have integer labels, if not we have to one hot encode our labels 
 
 
